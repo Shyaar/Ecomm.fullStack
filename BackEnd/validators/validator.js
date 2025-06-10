@@ -32,10 +32,28 @@ const registerSchema = Joi.object({
     }),
 });
 
+const Joi = require('joi');
+
 const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
+  email: Joi.string()
+    .trim()
+    .lowercase()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      'string.email': 'Please enter a valid email address.',
+    }),
+
+  password: Joi.string()
+    .min(8)
+    .max(128)
+    .required()
+    .messages({
+      'string.empty': 'Password is required.',
+      'string.min': 'Password must be at least 8 characters.',
+    }),
 });
+
 
 module.exports = {
   registerSchema,

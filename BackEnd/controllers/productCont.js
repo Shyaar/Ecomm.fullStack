@@ -1,4 +1,5 @@
 const {getProducts, createProduct, getSingleProduct} = require('../DB/productsTable')
+const {registerSchema, loginSchema,} = require('../validator')
 
 async function getAllProductsController(req, res) {
   try {
