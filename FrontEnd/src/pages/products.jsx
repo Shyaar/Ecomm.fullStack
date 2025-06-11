@@ -9,7 +9,7 @@ const ProductsContext = () => {
             try {
                 const response = await fetch('http://localhost:3001/products');
                 const data = await response.json();
-                setProducts(data); // ✅ store in state
+                setProducts(data);
             } catch (error) {
                 console.error("Failed to fetch products:", error);
             }
