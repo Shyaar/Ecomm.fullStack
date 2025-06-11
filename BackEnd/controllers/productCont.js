@@ -1,4 +1,4 @@
-const {getProducts, createProduct, getSingleProduct} = require('../DB/productsTable')
+const {getProducts, createProduct, getSingleProduct,getUserProducts} = require('../DB/productsTable')
 const {createProductSchema} = require('../validators/validator')
 const { products, users } = require("../models");
 
@@ -37,6 +37,22 @@ async function getOneProductsController(req, res) {
     res.status(200).json(product);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+}
+
+async function getUserProductsController(req, res) {
+
+  const {user_id} = req.params
+
+  try {
+    const Products = await getUserProducts(user_id);
+
+    res.status(201).json(Products);
+  } catch (error) {
+    res.status(500).json({
+      sucess: false,
+      message: `failed to create new Product ${error.message}`,
+    });
   }
 }
 
@@ -84,4 +100,5 @@ module.exports = {
   getAllProductsController,
   getOneProductsController,
   createProductController,
+  getUserProductsController,
 };
