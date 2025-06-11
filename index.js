@@ -1,19 +1,21 @@
-const express = require('express')
+const cors = require('cors');
+const express = require("express");
 
-const app = express()
+const app = express();
 
-const router = require('./Backend/routes/usersRouter')
-const productRouter = require('./Backend/routes/productRouter')
+const {router} = require("./BackEnd/routes/userRoute");
+const {productRouter} = require("./BackEnd/routes/productRoute");
 
-require('dotenv').config()
+require("dotenv").config();
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 
-console.log(PORT)
+console.log(PORT);
 
-app.use(express.json())
+app.use(express.json());
+app.use(cors());
 
-app.use('/',router)
-app.use('/',productRouter)
+app.use("/", router);
+app.use("/", productRouter);
 
-app.listen(PORT)
+app.listen(PORT);

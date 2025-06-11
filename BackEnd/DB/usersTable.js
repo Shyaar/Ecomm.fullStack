@@ -1,29 +1,31 @@
-const { where } = require('sequelize');
-const {products,users} = require('../models')
+const { where } = require("sequelize");
+const { products, users } = require("../models");
 
 const getAllUsers = async () => {
   return await users.findAll();
 };
 
-const getSingleUser = async (userMail)=>{
+const getSingleUser = async (userMail) => {
   const user = await users.findOne({ where: { email: userMail } });
 
-  return user
-}
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
+};
 
-const createUser = async(userEmail,value)=>{
+const createUser = async (userEmail, value) => {
+  const emailExist = await users.findOne({ where: { email: userEmail } });
 
-    const emailExist = users.findOne({where : {email:userEmail}})
+  if (emailExist) {
+    throw new Error("User already exists");
+  }
 
-    if(emailExist){
-        return `UserFoud ${emailExist}`
-    }
-    
-  return users.create(value)  
-}
+  return await users.create(value);
+};
 
 module.exports = {
   getAllUsers,
   createUser,
-  getSingleUser
+  getSingleUser,
 };

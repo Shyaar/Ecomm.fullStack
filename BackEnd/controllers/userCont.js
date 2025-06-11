@@ -1,5 +1,5 @@
 const {  getAllUsers, createUser, getSingleUser} = require('../DB/usersTable')
-const {registerSchema, loginSchema,} = require('../validator')
+const {registerSchema} = require('../validators/validator')
 
 
 async function getAllUsersController(req, res) {
@@ -20,18 +20,13 @@ async function getAllUsersController(req, res) {
 }
 
 async function getOneUsersController(req, res) {
-    const userMail = req.query.email
+  console.log(req.params)
+    const userMail = req.params.email
   try {
-    const UserList = await getSingleUser(userMail);
+    const user = await getSingleUser(userMail);
 
-    if (UserList.length == 0) {
-      return res.status(404).json({
-        success: false,
-        message: `No User found`,
-      });
-    }
     console.log(req.url);
-    res.status(200).json(UserList);
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -54,7 +49,7 @@ async function createUsersController(req, res) {
     if (error) {
       return res.status(400).json({
         success: false,
-        message: `failure in creating new staff ${error.details[0].message}`,
+        message: `failure in creating new User ${error.details[0].message}`,
       });
     }
 
@@ -66,7 +61,7 @@ async function createUsersController(req, res) {
   } catch (error) {
     res.status(500).json({
       sucess: false,
-      message: `failed to create new staff ${error.message}`,
+      message: `failed to create new user ${error.message}`,
     });
   }
 }

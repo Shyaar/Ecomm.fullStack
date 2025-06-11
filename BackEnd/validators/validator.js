@@ -1,11 +1,10 @@
 const Joi = require("joi");
 
 const registerSchema = Joi.object({
-  username: Joi.string()
+  name: Joi.string()
     .trim()
     .min(3)
     .max(30)
-    .regex(/^[a-zA-Z0-9_.-]*$/)
     .required()
     .messages({
       "string.pattern.base":
@@ -32,7 +31,6 @@ const registerSchema = Joi.object({
     }),
 });
 
-const Joi = require('joi');
 
 const loginSchema = Joi.object({
   email: Joi.string()
@@ -55,7 +53,62 @@ const loginSchema = Joi.object({
 });
 
 
+const createProductSchema = Joi.object({
+  user_id: Joi.number().integer().min(1),
+  name: Joi.string()
+    .trim()
+    .min(3)
+    .max(100)
+    .required()
+    .messages({
+      'string.empty': 'Product name is required.',
+      'string.min': 'Product name must be at least 3 characters long.',
+      'string.max': 'Product name must be at most 100 characters long.',
+    }),
+
+  description: Joi.string()
+    .trim()
+    .min(10)
+    .max(1000)
+    .required()
+    .messages({
+      'string.empty': 'Description is required.',
+      'string.min': 'Description must be at least 10 characters.',
+      'string.max': 'Description must be under 1000 characters.',
+    }),
+
+  price: Joi.number()
+    .max(1000000)
+    .precision(2)
+    .positive()
+    .required()
+    .messages({
+      'number.base': 'Price must be a number.',
+      'number.positive': 'Price must be greater than 0.',
+    }),
+
+  quantity: Joi.number()
+    .max(1000000)
+    .integer()
+    .min(0)
+    .required()
+    .messages({
+      'number.base': 'Quantity must be a number.',
+      'number.integer': 'Quantity must be an integer.',
+      'number.min': 'Quantity cannot be negative.',
+    }),
+
+  image: Joi.string()
+    .uri()
+    .optional()
+    .messages({
+      'string.uri': 'Image must be a valid URL.',
+    }),
+});
+
+
 module.exports = {
   registerSchema,
   loginSchema,
+  createProductSchema
 };

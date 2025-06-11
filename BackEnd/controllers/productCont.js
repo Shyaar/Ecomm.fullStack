@@ -1,5 +1,7 @@
 const {getProducts, createProduct, getSingleProduct} = require('../DB/productsTable')
-const {registerSchema, loginSchema,} = require('../validator')
+const {createProductSchema} = require('../validators/validator')
+const { products, users } = require("../models");
+
 
 async function getAllProductsController(req, res) {
   try {
@@ -18,7 +20,32 @@ async function getAllProductsController(req, res) {
   }
 }
 
+async function getOneProductsController(req, res) {
+
+    const productId = req.params.id
+
+  try {
+    const product = await getSingleProduct(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: `Product not found!!`,
+      });
+    }
+    console.log(req.url);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 async function createProductController(req, res) {
+
+  const {user_id} = req.body
+
+  
+
   if (!req.body) {
     res.status(406).send({
       success: false,
@@ -30,37 +57,31 @@ async function createProductController(req, res) {
   console.log(req.body);
   console.log(name);
 
-  const emailExists = await checkEmail(email);
-  console.log(emailExists)
-
-  if (emailExists) {
-    return res.status(406).send({
-      success: false,
-      message: "Email already exist",
-    });
-  }
 
   try {
-    const { error, value } = CreateStaffValidator.validate(req.body);
+    const { error, value } = createProductSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         success: false,
-        message: `failure in creating new staff ${error.details[0].message}`,
+        message: `failure in creating new Product ${error.details[0].message}`,
       });
     }
 
-    const newStaff = await createStaff(value);
+    const productName = value.name
 
-    res.status(201).json(newStaff);
+    const newProduct = await createProduct(user_id,productName, value);
+
+    res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({
       sucess: false,
-      message: `failed to create new staff ${error.message}`,
+      message: `failed to create new Product ${error.message}`,
     });
   }
 }
 
 module.exports = {
   getAllProductsController,
+  getOneProductsController,
   createProductController,
 };
